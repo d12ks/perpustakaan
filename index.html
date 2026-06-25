@@ -8,28 +8,31 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    
     <style>
         .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* PERBAIKAN CSS PRINT (Menambahkan display: block !important) */
         @media print {
             body * { visibility: hidden; }
             .print-active, .print-active * { visibility: visible; }
-            .print-active { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px;}
+            .print-active { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px; display: block !important;}
             
             body.printing-kta * { visibility: hidden; }
             body.printing-kta #print-kta-area, body.printing-kta #print-kta-area * { visibility: visible; }
-            body.printing-kta #print-kta-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
+            body.printing-kta #print-kta-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; display: block !important; }
             
             body.printing-barcode * { visibility: hidden; }
             body.printing-barcode #print-barcode-area, body.printing-barcode #print-barcode-area * { visibility: visible; }
-            body.printing-barcode #print-barcode-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
+            body.printing-barcode #print-barcode-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; display: block !important; }
 
             .no-print { display: none !important; }
             table { page-break-inside: auto; }
             tr { page-break-inside: avoid; page-break-after: auto; }
         }
 
+        /* Styling Kartu KTA */
         .kta-container { display: flex; flex-wrap: wrap; gap: 0.5cm; justify-content: flex-start; padding: 0.5cm; }
         .kta-card-container { display: flex; gap: 0.2cm; page-break-inside: avoid; margin-bottom: 0.5cm;}
         .kta-side { width: 8.56cm; height: 5.39cm; border: 1px solid #000; padding: 0.25cm; box-sizing: border-box; background: #fff; position: relative; border-radius: 4px; overflow: hidden; color: #000;}
@@ -42,6 +45,7 @@
         .kta-details td { vertical-align: top; }
         .kta-details td:first-child { width: 45px; }
 
+        /* KTA Belakang */
         .kta-back { padding: 0.4cm 0.3cm; display: flex; flex-direction: column;}
         .kta-back h4 { text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 5px; }
         .kta-back ol { list-style-type: decimal !important; padding-left: 18px !important; margin: 0; font-size: 9px; line-height: 1.4; margin-bottom: 8px; }
@@ -49,6 +53,7 @@
         .kta-back-sign { text-align: right; font-size: 9px; margin-top: auto; }
         .sign-name { font-weight: bold; text-decoration: underline; margin-top: 25px; }
 
+        /* Styling Barcode Label */
         .barcode-print-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5cm; padding: 0.5cm; }
         .barcode-item-label { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px dashed #999; padding: 10px; border-radius: 8px; background: #fff; page-break-inside: avoid; text-align: center;}
         .barcode-item-label .book-title { font-size: 11px; font-weight: bold; margin-bottom: 5px; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -64,8 +69,9 @@
 
     <div id="toast-container" class="fixed top-5 right-5 z-[60] flex flex-col gap-2"></div>
 
-    <div id="print-kta-area" class="hidden no-print"></div>
-    <div id="print-barcode-area" class="hidden no-print"></div>
+    <!-- PERBAIKAN HTML PRINT: Menghapus kelas 'no-print' agar CSS print aktif bekerja -->
+    <div id="print-kta-area" class="hidden"></div>
+    <div id="print-barcode-area" class="hidden"></div>
 
     <!-- Modal Pratinjau KTA -->
     <div id="kta-preview-modal" class="fixed inset-0 z-[80] hidden items-center justify-center bg-gray-900 bg-opacity-80 backdrop-blur-sm">
@@ -288,7 +294,7 @@
                         <p class="text-gray-600">Scan KTA Murid lalu scan Barcode Buku.</p>
                     </div>
 
-                    <!-- Form Reguler/Individu -->
+                    <!-- Form Peminjaman -->
                     <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-500">
                         <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5 text-blue-500"></i> Form Peminjaman</h3>
                         <form id="form-sirkulasi" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -526,7 +532,7 @@
 
     <script>
         // --- KONFIGURASI URL APPS SCRIPT ---
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwOy_gN6Ng8UFDw0zZEZIqnWXOrdq-fr0MHXRML2DLAdMdfRPs6tIvA64Z_ahH0VePD/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycby7soX_i4I8tFdmgpuSzQBLZM7cGpFKdhU_c4yECzvW1L9LcBhASZzE0sQjZRFMZC7T/exec"; 
         
         // State Global
         let currentUser = null;
@@ -806,7 +812,7 @@
                     }
                 }
             });
-            if(telatCount === 0) tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-green-600 font-semibold">Tidak ada keterlambatan pengembalian buku!</td></tr>`;
+            if(telatCount === 0) tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-green-600 font-semibold">Semua buku aman. Tidak ada yang terlambat!</td></tr>`;
         }
 
         function renderCharts(dipinjam, kembali, kunjungan) {
@@ -1155,7 +1161,13 @@
             const printArea = document.getElementById('print-kta-area');
             printArea.innerHTML = content;
             document.body.classList.add('printing-kta');
-            setTimeout(() => { window.print(); document.body.classList.remove('printing-kta'); printArea.innerHTML = ''; }, 1000);
+            
+            // Jeda 1 detik agar browser selesai me-render UI secara penuh sebelum print dialog muncul
+            setTimeout(() => { 
+                window.print(); 
+                document.body.classList.remove('printing-kta'); 
+                printArea.innerHTML = ''; 
+            }, 1000);
         }
 
         // --- PENGATURAN KTA ---
