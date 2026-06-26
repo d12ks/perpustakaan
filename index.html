@@ -65,24 +65,26 @@
         
         .kta-body { display: flex; gap: 8px; flex-grow: 1; }
         
-        /* Area Foto Diperlebar (2.2cm x 3.3cm) */
-        .kta-photo { width: 2.2cm; height: 3.3cm; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #64748b; text-align: center; border: 1px dashed #94a3b8; background: #f1f5f9; border-radius: 4px; box-shadow: 1px 1px 3px rgba(0,0,0,0.05); flex-shrink: 0; margin-top: 0;}
+        /* Area Foto Diperlebar (2.2cm x 3.3cm) tapi box dihapus (invisible placeholder) */
+        .kta-photo { width: 2.2cm; height: 3.3cm; display: flex; align-items: center; justify-content: center; font-size: 10px; color: transparent; border: none; background: transparent; flex-shrink: 0; margin-top: 0;}
         
         .kta-details { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 2px;}
-        .kta-details table { width: 100%; font-size: 8.5px; line-height: 1.4; }
+        .kta-details table { width: 100%; font-size: 8.5px; line-height: 1.5; }
         .kta-details td { vertical-align: top; }
         .kta-details td:first-child { width: 55px; font-weight: 600; color: #1e293b;}
         
-        .kta-barcode-area { text-align: center; margin-top: auto; padding-top: 4px;}
-
         /* Desain KTA Belakang */
         .kta-back { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
-        .kta-back .kta-inner { background: rgba(255,255,255,0.6); border-radius: 4px; }
+        .kta-back .kta-inner { background: rgba(255,255,255,0.6); border-radius: 4px; display: flex; flex-direction: column;}
         .kta-back h4 { text-align: center; font-weight: bold; font-size: 11px; margin-bottom: 6px; color: #0f172a; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; padding-bottom: 3px; display: inline-block; margin-left: auto; margin-right: auto; width: 60%;}
         .kta-back ol { list-style-type: decimal !important; padding-left: 18px !important; margin: 0; font-size: 9px; line-height: 1.5; margin-bottom: 8px; color: #334155;}
         .kta-back li { display: list-item !important; margin-bottom: 4px; text-align: justify;}
-        .kta-back-sign { text-align: right; font-size: 9px; margin-top: auto; color: #1e293b;}
-        .sign-name { font-weight: bold; text-decoration: underline; margin-top: 25px; }
+        
+        /* Modifikasi Bawah Belakang (Barcode Kiri, TTD Kanan) */
+        .kta-back-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;}
+        .kta-back-sign { text-align: center; font-size: 9px; color: #1e293b;}
+        .sign-name { font-weight: bold; text-decoration: underline; margin-top: 2px; }
+        .sign-img { max-height: 1.2cm; max-width: 3cm; object-fit: contain; display: block; margin: 2px auto; }
 
         .barcode-print-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5cm; padding: 0.5cm; }
         .barcode-item-label { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px dashed #999; padding: 10px; border-radius: 8px; background: #fff; page-break-inside: avoid; text-align: center;}
@@ -548,6 +550,12 @@
                                 <input type="hidden" id="set-logo-url-hidden">
                                 <p class="text-xs text-gray-500 mt-1">Gunakan gambar memanjang (Kop+Logo) berformat JPG/PNG.</p>
                             </div>
+                            <div>
+                                <label class="block text-sm font-semibold">Upload Tanda Tangan Kepala</label>
+                                <input type="file" id="set-ttd-file" accept="image/png, image/jpeg" class="w-full p-2 border rounded">
+                                <input type="hidden" id="set-ttd-url-hidden">
+                                <p class="text-xs text-gray-500 mt-1">Sangat disarankan memakai gambar PNG berlatar transparan.</p>
+                            </div>
                             <div><label class="block text-sm font-semibold">Nama Kepala Perpustakaan</label><input type="text" id="set-kepala-nama" class="w-full p-2 border rounded" required></div>
                             <div><label class="block text-sm font-semibold">NIP Kepala Perpustakaan</label><input type="text" id="set-kepala-nip" class="w-full p-2 border rounded"></div>
                             <div><label class="block text-sm font-semibold">Masa Berlaku KTA</label><input type="text" id="set-berlaku" class="w-full p-2 border rounded" value="Selama Menjadi Siswa"></div>
@@ -562,7 +570,7 @@
 
     <script>
         // --- KONFIGURASI URL APPS SCRIPT ---
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzzYODV6PVUASLaV5rl8wxmebxILiH5TvDyozkZdbNbHI_hwtRJEEhd8F2PI8MUGpSo/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbySDXpQFo8s6u9dgn6Au5adBOIBMn-xhoPGG-c73ZJZl9DcRI_sxD6xjLnIutjXVDZ0/exec"; 
         
         // State Global
         let currentUser = null;
@@ -1153,7 +1161,7 @@
                             ${kopHtml}
                             <div class="kta-title">KARTU ANGGOTA PERPUSTAKAAN</div>
                             <div class="kta-body">
-                                <div class="kta-photo">Foto<br>2x3 / 3x4</div>
+                                <div class="kta-photo"></div>
                                 <div class="kta-details">
                                     <table cellspacing="0" cellpadding="0">
                                         <tr><td>No. Anggota</td><td>: ${m.NISN}</td></tr>
@@ -1163,9 +1171,6 @@
                                         <tr><td>No. HP</td><td>: ${noHp}</td></tr>
                                         <tr><td>Alamat</td><td>: ${alamat}</td></tr>
                                     </table>
-                                    <div class="kta-barcode-area">
-                                        <svg class="kta-barcode" jsbarcode-value="${m.NISN}" jsbarcode-width="1.2" jsbarcode-height="20" jsbarcode-displayvalue="true" jsbarcode-fontsize="9" jsbarcode-margin="0"></svg>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1178,10 +1183,16 @@
                                 <li>Kartu ini tidak dapat dipinjamkan atau digunakan oleh orang lain.</li>
                                 <li>Kembalikanlah buku tepat pada waktunya dalam keaadaan utuh dan baik.</li>
                             </ol>
-                            <div class="kta-back-sign">
-                                Kepala Perpustakaan
-                                <div class="sign-name">${s.NAMA_KEPALA || ''}</div>
-                                NIP. ${s.NIP_KEPALA || ''}
+                            <div class="kta-back-bottom">
+                                <div style="text-align: center; background: white; padding: 2px; border-radius: 3px;">
+                                    <svg class="kta-barcode" jsbarcode-value="${m.NISN}" jsbarcode-width="1.1" jsbarcode-height="22" jsbarcode-displayvalue="true" jsbarcode-fontsize="8" jsbarcode-margin="0"></svg>
+                                </div>
+                                <div class="kta-back-sign">
+                                    Kepala Perpustakaan
+                                    ${s.TTD_URL ? `<img src="${s.TTD_URL}" class="sign-img" alt="TTD">` : `<br><br><br>`}
+                                    <div class="sign-name">${s.NAMA_KEPALA || ''}</div>
+                                    NIP. ${s.NIP_KEPALA || ''}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1225,38 +1236,47 @@
             document.getElementById('set-kepala-nip').value = ktaSettings.NIP_KEPALA || ''; 
             document.getElementById('set-berlaku').value = ktaSettings.MASA_BERLAKU || 'Selama Menjadi Siswa';
             document.getElementById('set-logo-url-hidden').value = ktaSettings.LOGO_URL || '';
+            document.getElementById('set-ttd-url-hidden').value = ktaSettings.TTD_URL || '';
         }
+
+        const fileToDataURL = (file) => new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas'); const MAX_WIDTH = 700; 
+                    let width = img.width; let height = img.height;
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/png', 0.8)); // Gunakan PNG untuk transparansi
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
 
         document.getElementById('form-pengaturan').onsubmit = async (e) => {
             e.preventDefault();
-            const fileInput = document.getElementById('set-logo-file');
+            toggleLoading(true);
+            
             let logoUrl = document.getElementById('set-logo-url-hidden').value;
+            let ttdUrl = document.getElementById('set-ttd-url-hidden').value;
+            
+            const logoFile = document.getElementById('set-logo-file').files[0];
+            const ttdFile = document.getElementById('set-ttd-file').files[0];
 
-            if (fileInput.files.length > 0) {
-                toggleLoading(true);
-                const file = fileInput.files[0];
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas'); const MAX_WIDTH = 700; 
-                        let width = img.width; let height = img.height;
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-                        saveSettingsToGAS(canvas.toDataURL('image/jpeg', 0.8));
-                    };
-                    img.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            } else { toggleLoading(true); saveSettingsToGAS(logoUrl); }
+            if (logoFile) logoUrl = await fileToDataURL(logoFile);
+            if (ttdFile) ttdUrl = await fileToDataURL(ttdFile);
+
+            saveSettingsToGAS(logoUrl, ttdUrl);
         };
 
-        async function saveSettingsToGAS(logoUrl) {
-            const payload = { NAMA_KEPALA: document.getElementById('set-kepala-nama').value, NIP_KEPALA: document.getElementById('set-kepala-nip').value, MASA_BERLAKU: document.getElementById('set-berlaku').value, LOGO_URL: logoUrl };
+        async function saveSettingsToGAS(logoUrl, ttdUrl) {
+            const payload = { NAMA_KEPALA: document.getElementById('set-kepala-nama').value, NIP_KEPALA: document.getElementById('set-kepala-nip').value, MASA_BERLAKU: document.getElementById('set-berlaku').value, LOGO_URL: logoUrl, TTD_URL: ttdUrl };
             const res = await fetchGAS('savePengaturan', payload);
             toggleLoading(false);
-            if(res.status === 'success') { ktaSettings = payload; document.getElementById('set-logo-url-hidden').value = logoUrl; showToast("Pengaturan disimpan", "success"); } 
+            if(res.status === 'success') { ktaSettings = payload; document.getElementById('set-logo-url-hidden').value = logoUrl; document.getElementById('set-ttd-url-hidden').value = ttdUrl; showToast("Pengaturan disimpan", "success"); } 
             else { showToast("Gagal menyimpan: " + res.message, "error"); }
         }
 
